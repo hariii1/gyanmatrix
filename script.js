@@ -23,3 +23,40 @@ function validateInputs(){
     }
 
 }
+
+const pokedex = document.getElementById("displaydex");
+
+const fetchPokemon = () => {
+  const promises = [];
+  for (let i = 1; i <= 9; i++) {
+    const url = `https://randomuser.me/api/?results=10${i}`;
+    promises.push(fetch(url).then((res) => res.json()));
+  }
+  Promise.all(promises).then((results) => {
+    const pokemon = results.map((results) => ({
+      name: results.name.first,
+      email: results.email,
+      city: results.location.city,
+      pic: results.picture.large,
+    }));
+    displayPokemon(pokemon);
+  });
+};
+
+const displayPokemon = (pokemon) => {
+  console.log(pokemon);
+  const pokemonHTMLString = pokemon.map(
+    (pokeman) => `
+      <li>
+              <img src="${pokeman.picture.large}"/>
+             <h2> ${pokeman.name.first}</h2>
+              <h2>${pokeman.email}</h2>
+               <h2>${pokeman.location.city}</h2>
+             </li>
+    `,
+  );
+
+  pokedex.innerHTML = pokemonHTMLString;
+};
+
+fetchPokemon();
